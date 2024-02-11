@@ -34,7 +34,7 @@ public class ContactService {
     }
     public static boolean validatePhoneNumber(String phoneNumber){
         for (var contact: ContactRepository.getAll()) {
-            if(contact.getPhoneNumber() == phoneNumber)
+            if(contact.getPhoneNumber().equalsIgnoreCase(phoneNumber))
                 return false;
         }
         return true;
@@ -42,15 +42,15 @@ public class ContactService {
     public static List<Contact> searchByFirstName(String firstName){
         var result = new ArrayList<Contact>();
         for (var contact: ContactRepository.getAll()) {
-            if(contact.getFirstName().toLowerCase() == firstName.toLowerCase())
+            if(contact.getFirstName().equalsIgnoreCase(firstName))
                 result.add(contact);
         }
         return result;
     }
-    public static List<Contact> searchByLastName(String LastName){
+    public static List<Contact> searchByLastName(String lastName){
         var result = new ArrayList<Contact>();
         for (var contact: ContactRepository.getAll()) {
-            if(contact.getLastName().toLowerCase() == LastName.toLowerCase())
+            if(contact.getLastName().equalsIgnoreCase(lastName))
                 result.add(contact);
         }
         return result;
@@ -58,7 +58,7 @@ public class ContactService {
     public static List<Contact> searchByPhoneNumber(String phoneNumber){
         var result = new ArrayList<Contact>();
         for (var contact: ContactRepository.getAll()) {
-            if(contact.getPhoneNumber().toLowerCase() == phoneNumber.toLowerCase())
+            if(contact.getPhoneNumber().equalsIgnoreCase(phoneNumber))
                 result.add(contact);
         }
         return result;
@@ -66,7 +66,7 @@ public class ContactService {
     public static List<Contact> searchByCity(String city){
         var result = new ArrayList<Contact>();
         for (var contact: ContactRepository.getAll()) {
-            if(contact.getCity().toLowerCase() == city.toLowerCase())
+            if(contact.getCity().equalsIgnoreCase(city))
                 result.add(contact);
         }
         return result;

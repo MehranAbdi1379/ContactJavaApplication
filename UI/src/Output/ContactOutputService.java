@@ -18,6 +18,7 @@ public class ContactOutputService {
         System.out.println("Thanks for using this application.\n" +
                             "See you next time :)");
     }
+    public static void showNoUserWithId(){ System.out.println("There is no user with this id.");}
     public static void showErrorMessage(){
         System.out.println("Please enter a valid value.");
     }

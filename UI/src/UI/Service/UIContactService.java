@@ -10,16 +10,68 @@ import java.util.List;
 
 public class UIContactService {
     public static void runApp(){
+        //initial contacts
+        insertInitialContacts();
+
+        //start the program
         ContactOutputService.showWelcomeMessage();
         runMainFunctionalities();
-        //the program is finished.
+
+
+        //Stop the program
         InputService.closeScanner();
         ContactOutputService.showThanksMessage();
+    }
+    public static void insertInitialContacts(){
+        var contact = new Contact();
+        contact.setFirstName("Mehran");
+        contact.setLastName("Abdi");
+        contact.setAge(23);
+        contact.setPhoneNumber("09033294671");
+        contact.setCity("Tabriz");
+        contact.setFavorite(true);
+        ContactService.insert(contact);
+
+        contact = new Contact();
+        contact.setFirstName("Ali");
+        contact.setLastName("Hoseyni");
+        contact.setAge(32);
+        contact.setPhoneNumber("09784658978");
+        contact.setCity("Sahand");
+        contact.setFavorite(false);
+        ContactService.insert(contact);
+
+        contact = new Contact();
+        contact.setFirstName("Abbas");
+        contact.setLastName("Abdi");
+        contact.setAge(52);
+        contact.setPhoneNumber("09149005893");
+        contact.setCity("Tabriz");
+        contact.setFavorite(true);
+        ContactService.insert(contact);
+
+        contact = new Contact();
+        contact.setFirstName("Meri");
+        contact.setLastName("Kami");
+        contact.setAge(14);
+        contact.setPhoneNumber("09478594678");
+        contact.setCity("Shiraz");
+        contact.setFavorite(false);
+        ContactService.insert(contact);
+
+        contact = new Contact();
+        contact.setFirstName("Amir");
+        contact.setLastName("Golami");
+        contact.setAge(76);
+        contact.setPhoneNumber("09487512345");
+        contact.setCity("Tehran");
+        contact.setFavorite(true);
+        ContactService.insert(contact);
     }
     public static void insert(){
         var firstName = getFirstName();
         var lastName = getLastName();
-        var phoneNumber = getPhoneNumber();
+        var phoneNumber = getPhoneNumber(false);
         var city = getCity();
         var age = getAge();
         var favorite = getFavorite();
@@ -46,7 +98,7 @@ public class UIContactService {
         ContactOutputService.askForFunctionality();
         functionalityIndex = InputService.readLine();
         var searchCompleted = false;
-        while(!functionalityIndex.equalsIgnoreCase("q") || searchCompleted)
+        while(!functionalityIndex.equalsIgnoreCase("q") && !searchCompleted)
         {
             searchCompleted = true;
             switch (functionalityIndex) {
@@ -56,17 +108,21 @@ public class UIContactService {
                 case "4" -> searchByCity();
                 default -> searchCompleted = false;
             }
-            if(!searchCompleted)
+            if(!functionalityIndex.equalsIgnoreCase("q") && !searchCompleted)
             {
                 ContactOutputService.showSearchFunctionalities();
                 ContactOutputService.askForFunctionality();
                 functionalityIndex = InputService.readLine();
             }
         }
-        editOrDelete();
+        if(searchCompleted)
+        {
+            editOrDelete();
+        }
     }
     public static void editOrDelete(){
         ContactOutputService.showEditAndRemoveFunctionalities();
+        ContactOutputService.askForFunctionality();
         var functionalityIndex = InputService.readLine();
         while(!functionalityIndex.equalsIgnoreCase("q"))
         {
@@ -74,7 +130,7 @@ public class UIContactService {
                 case "1" -> update();
                 case "2" -> deleteById();
             }
-            ContactOutputService.showSearchFunctionalities();
+            ContactOutputService.showEditAndRemoveFunctionalities();
             ContactOutputService.askForFunctionality();
             functionalityIndex = InputService.readLine();
         }
@@ -83,10 +139,25 @@ public class UIContactService {
         var id = getId();
         var contact = ContactService.getById(id);
         if(contact != null){
-            var firstName = InputService.readLine();
-            var lastName = InputService.readLine();
-            var city = InputService.readLine();
+            var firstName = getFirstNameForUpdate(contact);
+            var lastName = getLastNameForUpdate(contact);
+            var phoneNumber = getPhoneNumberForUpdate(contact);
+            var city = getCityForUpdate(contact);
+            var age = getAgeForUpdate(contact);
+            var favorite = getFavoriteForUpdate(contact);
+
+            contact.setFirstName(firstName);
+            contact.setLastName(lastName);
+            contact.setPhoneNumber(phoneNumber);
+            contact.setCity(city);
+            contact.setAge(age);
+            contact.setFavorite(favorite);
+
+            ContactService.update(contact);
             // TODO: finish this method
+        }
+        else {
+            ContactOutputService.showNoUserWithId();
         }
     }
     public static void deleteById(){
@@ -102,12 +173,56 @@ public class UIContactService {
         ContactOutputService.listContacts(ContactService.searchByLastName(lastName));
     }
     public static void searchByPhoneNumber(){
-        var phoneNumber = getPhoneNumber();
+        var phoneNumber = getPhoneNumber(true);
         ContactOutputService.listContacts(ContactService.searchByPhoneNumber(phoneNumber));
     }
     public static void searchByCity(){
         var city = getCity();
         ContactOutputService.listContacts(ContactService.searchByCity(city));
+    }
+    public static String getFirstNameForUpdate(Contact contact){
+        ContactOutputService.askForFirstName();
+        var firstName = InputService.readLine();
+        if(!ContactService.validateString(firstName))
+            return contact.getFirstName();
+        return firstName;
+    }
+    public static String getLastNameForUpdate(Contact contact)
+    {
+        ContactOutputService.askForLastName();
+        var lastName = InputService.readLine();
+        if(!ContactService.validateString(lastName))
+            return contact.getLastName();
+        return lastName;
+    }
+    public static String getPhoneNumberForUpdate(Contact contact){
+        ContactOutputService.askForPhoneNumber();
+        var phoneNumber = InputService.readLine();
+        if(!ContactService.validateString(phoneNumber) || !ContactService.validatePhoneNumber(phoneNumber))
+            return contact.getPhoneNumber();
+        return phoneNumber;
+    }
+    public static String getCityForUpdate(Contact contact)
+    {
+        ContactOutputService.askForCity();
+        var city = InputService.readLine();
+        if(!ContactService.validateString(city))
+            return contact.getCity();
+        return city;
+    }
+    public static int getAgeForUpdate(Contact contact){
+        ContactOutputService.askForAge();
+        var ageString = InputService.readLine();
+        if(!ContactService.validateString(ageString) || ContactService.validateInteger(ageString) == 0)
+            return contact.getAge();
+        return ContactService.validateInteger(ageString);
+    }
+    public static boolean getFavoriteForUpdate(Contact contact){
+        ContactOutputService.askForFavorite();
+        var favoriteString = InputService.readLine();
+        if(!ContactService.validateYesOrNo(favoriteString))
+            return contact.isFavorite();
+        return ContactService.determineYesOrNo(favoriteString);
     }
     public static String getFirstName(){
         ContactOutputService.askForFirstName();
@@ -131,7 +246,7 @@ public class UIContactService {
         }
         return lastName;
     }
-    public static String getPhoneNumber(){
+    public static String getPhoneNumberForSearch(){
         ContactOutputService.askForPhoneNumber();
         var phoneNumber = InputService.readLine();
         while(!ContactService.validatePhoneNumber(phoneNumber) || !ContactService.validateString(phoneNumber))
@@ -139,6 +254,29 @@ public class UIContactService {
             ContactOutputService.showErrorMessage();
             ContactOutputService.askForPhoneNumber();
             phoneNumber = InputService.readLine();
+        }
+        return phoneNumber;
+    }
+    public static String getPhoneNumber(boolean search)
+    {
+        ContactOutputService.askForPhoneNumber();
+        var phoneNumber = InputService.readLine();
+        if(search)
+        {
+            while(!ContactService.validateString(phoneNumber))
+            {
+                ContactOutputService.showErrorMessage();
+                ContactOutputService.askForPhoneNumber();
+                phoneNumber = InputService.readLine();
+            }
+        }
+        else {
+            while(!ContactService.validatePhoneNumber(phoneNumber) || !ContactService.validateString(phoneNumber))
+            {
+                ContactOutputService.showErrorMessage();
+                ContactOutputService.askForPhoneNumber();
+                phoneNumber = InputService.readLine();
+            }
         }
         return phoneNumber;
     }
