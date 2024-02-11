@@ -5,6 +5,9 @@ import Models.Contact;
 import Output.ContactOutputService;
 import Services.ContactService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UIContactService {
     public static void runApp(){
         ContactOutputService.showWelcomeMessage();
@@ -42,46 +45,68 @@ public class UIContactService {
         ContactOutputService.showSearchFunctionalities();
         ContactOutputService.askForFunctionality();
         functionalityIndex = InputService.readLine();
+        var searchCompleted = false;
+        while(!functionalityIndex.equalsIgnoreCase("q") || searchCompleted)
+        {
+            searchCompleted = true;
+            switch (functionalityIndex) {
+                case "1" -> searchByFirstName();
+                case "2" -> searchByLastName();
+                case "3" -> searchByPhoneNumber();
+                case "4" -> searchByCity();
+                default -> searchCompleted = false;
+            }
+            if(!searchCompleted)
+            {
+                ContactOutputService.showSearchFunctionalities();
+                ContactOutputService.askForFunctionality();
+                functionalityIndex = InputService.readLine();
+            }
+        }
+        editOrDelete();
+    }
+    public static void editOrDelete(){
+        ContactOutputService.showEditAndRemoveFunctionalities();
+        var functionalityIndex = InputService.readLine();
         while(!functionalityIndex.equalsIgnoreCase("q"))
         {
-            switch (functionalityIndex)
-            {
-                case "1":
-                    searchByFirstName();
-                    break;
-                case "2":
-                    searchByLastName();
-                    break;
-                case "3":
-                    searchByPhoneNumber();
-                    break;
-                case "4":
-                    searchByCity();
-                    break;
-                default:
-                    break;
+            switch (functionalityIndex) {
+                case "1" -> update();
+                case "2" -> deleteById();
             }
             ContactOutputService.showSearchFunctionalities();
             ContactOutputService.askForFunctionality();
             functionalityIndex = InputService.readLine();
         }
     }
+    public static void update(){
+        var id = getId();
+        var contact = ContactService.getById(id);
+        if(contact != null){
+            var firstName = InputService.readLine();
+            var lastName = InputService.readLine();
+            var city = InputService.readLine();
+            // TODO: finish this method
+        }
+    }
+    public static void deleteById(){
+        var ids = getIds();
+        ContactService.deleteByIds(ids);
+    }
     public static void searchByFirstName(){
-
+        var firstName = getFirstName();
+        ContactOutputService.listContacts(ContactService.searchByFirstName(firstName));
     }
     public static void searchByLastName(){
-        ContactOutputService.askForLastName();
-        var lastName = InputService.readLine();
+        var lastName = getLastName();
         ContactOutputService.listContacts(ContactService.searchByLastName(lastName));
     }
     public static void searchByPhoneNumber(){
-        ContactOutputService.askForPhoneNumber();
-        var phoneNumber = InputService.readLine();
+        var phoneNumber = getPhoneNumber();
         ContactOutputService.listContacts(ContactService.searchByPhoneNumber(phoneNumber));
     }
     public static void searchByCity(){
-        ContactOutputService.askForCity();
-        var city = InputService.readLine();
+        var city = getCity();
         ContactOutputService.listContacts(ContactService.searchByCity(city));
     }
     public static String getFirstName(){
@@ -95,7 +120,6 @@ public class UIContactService {
         }
         return firstName;
     }
-
     public static String getLastName(){
         ContactOutputService.askForLastName();
         var lastName = InputService.readLine();
@@ -140,6 +164,28 @@ public class UIContactService {
         }
         var age = ContactService.validateInteger(ageString);
         return age;
+    }
+    public static int getId(){
+        ContactOutputService.askForId();
+        var idString = InputService.readLine();
+        while(ContactService.validateInteger(idString) == 0)
+        {
+            ContactOutputService.showErrorMessage();
+            ContactOutputService.askForId();
+            idString = InputService.readLine();
+        }
+        var id = ContactService.validateInteger(idString);
+        return id;
+    }
+    public static List<Integer> getIds(){
+        ContactOutputService.askForIds();
+        var contactIds = InputService.readLine();
+        var ids = new ArrayList<Integer>();
+        for (String id: contactIds.split(",")) {
+            if(ContactService.validateInteger(id) != 0)
+                ids.add(Integer.parseInt(id.trim()));
+        }
+        return ids;
     }
     public static boolean getFavorite(){
         ContactOutputService.askForFavorite();

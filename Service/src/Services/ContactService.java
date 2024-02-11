@@ -79,6 +79,11 @@ public class ContactService {
         }
         return favoriteContacts;
     }
+    public static void deleteByIds(List<Integer> ids){
+        for (var id: ids) {
+            ContactRepository.delete(id);
+        }
+    }
     public static void insert(Contact contact){
         ContactRepository.insert(contact);
     }
