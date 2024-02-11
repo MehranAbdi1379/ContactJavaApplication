@@ -51,6 +51,10 @@ public class ContactOutputService {
     public static void askForAge(){
         System.out.print("Please enter the Age: ");
     }
+    public static void askForIds() { System.out.print( "Please enter contact Ids to remove.\n" +
+                                                        "Format of input: 2,4,6\n" +
+                                                        "Contact Ids: ");}
+    public static void askForId() { System.out.print("Please enter Id of the contact: ");}
     public static void askForFunctionality(){
         System.out.print("Please enter the number of the functionality (Q for quit): ");
     }
