@@ -10,6 +10,17 @@ public class Contact {
     private boolean Deleted = false;
     private boolean Favorite = false;
 
+    public Contact(String firstName, String lastName, String phoneNumber, String city, int age) {
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+        City = city;
+        Age = age;
+    }
+
+    public Contact() {
+    }
+
     public int getId() {
         return Id;
     }
