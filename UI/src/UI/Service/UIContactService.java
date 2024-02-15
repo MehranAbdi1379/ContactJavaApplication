@@ -7,6 +7,7 @@ import Services.ContactService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class UIContactService {
     public static void runApp(){
@@ -23,50 +24,31 @@ public class UIContactService {
         ContactOutputService.showThanksMessage();
     }
     public static void insertInitialContacts(){
-        var contact = new Contact();
-        contact.setFirstName("Mehran");
-        contact.setLastName("Abdi");
-        contact.setAge(23);
-        contact.setPhoneNumber("09033294671");
-        contact.setCity("Tabriz");
-        contact.setFavorite(true);
-        ContactService.insert(contact);
+        String[] firstNames = {"John", "Alice", "Michael", "Emma", "William", "Sophia", "James", "Olivia", "David", "Emily"};
+        String[] lastNames = {"Smith", "Johnson", "Brown", "Jones", "Miller", "Davis", "Garcia", "Martinez", "Lee", "Perez"};
+        String[] cities = {"New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"};
+            List<Contact> contacts = new ArrayList<>();
+            Random random = new Random();
 
-        contact = new Contact();
-        contact.setFirstName("Ali");
-        contact.setLastName("Hoseyni");
-        contact.setAge(32);
-        contact.setPhoneNumber("09784658978");
-        contact.setCity("Sahand");
-        contact.setFavorite(false);
-        ContactService.insert(contact);
+            for (int i = 1; i <= 30; i++) {
+                String firstName = firstNames[random.nextInt(firstNames.length)];
+                String lastName = lastNames[random.nextInt(lastNames.length)];
+                String phoneNumber = generatePhoneNumber();
+                String city = cities[random.nextInt(cities.length)];
+                int age = random.nextInt(50) + 18; // Random age between 18 and 67
 
-        contact = new Contact();
-        contact.setFirstName("Abbas");
-        contact.setLastName("Abdi");
-        contact.setAge(52);
-        contact.setPhoneNumber("09149005893");
-        contact.setCity("Tabriz");
-        contact.setFavorite(true);
-        ContactService.insert(contact);
+                var contact = new Contact(firstName,lastName,phoneNumber,city,age);
+                ContactService.insert(contact);
+            }
+    }
+    private static String generatePhoneNumber() {
+        Random random = new Random();
+        StringBuilder phoneNumber = new StringBuilder("09");
 
-        contact = new Contact();
-        contact.setFirstName("Meri");
-        contact.setLastName("Kami");
-        contact.setAge(14);
-        contact.setPhoneNumber("09478594678");
-        contact.setCity("Shiraz");
-        contact.setFavorite(false);
-        ContactService.insert(contact);
-
-        contact = new Contact();
-        contact.setFirstName("Amir");
-        contact.setLastName("Golami");
-        contact.setAge(76);
-        contact.setPhoneNumber("09487512345");
-        contact.setCity("Tehran");
-        contact.setFavorite(true);
-        ContactService.insert(contact);
+        for (int i = 0; i < 9; i++) {
+            phoneNumber.append(random.nextInt(10));
+        }
+        return phoneNumber.toString();
     }
     public static void insert(){
         var firstName = getFirstName();
@@ -76,13 +58,8 @@ public class UIContactService {
         var age = getAge();
         var favorite = getFavorite();
 
-        var contact = new Contact();
-        contact.setFirstName(firstName);
-        contact.setLastName(lastName);
-        contact.setAge(age);
-        contact.setCity(city);
+        var contact = new Contact(firstName,lastName,phoneNumber,city,age);
         contact.setFavorite(favorite);
-        contact.setPhoneNumber(phoneNumber);
 
         ContactService.insert(contact);
     }
@@ -106,6 +83,7 @@ public class UIContactService {
                 case "2" -> searchByLastName();
                 case "3" -> searchByPhoneNumber();
                 case "4" -> searchByCity();
+                case "5" -> searchByAge();
                 default -> searchCompleted = false;
             }
             if(!functionalityIndex.equalsIgnoreCase("q") && !searchCompleted)
@@ -121,7 +99,7 @@ public class UIContactService {
         }
     }
     public static void editOrDelete(){
-        ContactOutputService.showEditAndRemoveFunctionalities();
+        ContactOutputService.showUpdateAndDeleteFunctionalities();
         ContactOutputService.askForFunctionality();
         var functionalityIndex = InputService.readLine();
         while(!functionalityIndex.equalsIgnoreCase("q"))
@@ -129,13 +107,15 @@ public class UIContactService {
             switch (functionalityIndex) {
                 case "1" -> update();
                 case "2" -> deleteById();
+                default -> ContactOutputService.showErrorMessage();
             }
-            ContactOutputService.showEditAndRemoveFunctionalities();
+            ContactOutputService.showUpdateAndDeleteFunctionalities();
             ContactOutputService.askForFunctionality();
             functionalityIndex = InputService.readLine();
         }
     }
     public static void update(){
+        ContactOutputService.showUpdateFunctionality();
         var id = getId();
         var contact = ContactService.getById(id);
         if(contact != null){
@@ -154,7 +134,6 @@ public class UIContactService {
             contact.setFavorite(favorite);
 
             ContactService.update(contact);
-            // TODO: finish this method
         }
         else {
             ContactOutputService.showNoUserWithId();
@@ -175,6 +154,30 @@ public class UIContactService {
     public static void searchByPhoneNumber(){
         var phoneNumber = getPhoneNumber(true);
         ContactOutputService.listContacts(ContactService.searchByPhoneNumber(phoneNumber));
+    }
+    public static void searchByAge(){
+        ContactOutputService.showSearchByAgeFunctionality();
+        ContactOutputService.askForFunctionality();
+        var functionalityIndex = InputService.readLine();
+        while(!functionalityIndex.equalsIgnoreCase("q"))
+        {
+            switch (functionalityIndex) {
+                case "1" -> ;
+                case "2" -> ;
+                case "3" -> ;
+                case "4" -> ;
+                default -> ContactOutputService.showErrorMessage();
+            }
+            ContactOutputService.showUpdateAndDeleteFunctionalities();
+            ContactOutputService.askForFunctionality();
+            functionalityIndex = InputService.readLine();
+        }
+        var age = getAge();
+        ContactOutputService.listContacts(ContactService.searchByAge(age));
+    }
+    public static void searchByAgeByExactAge(){
+        var age = getAge();
+
     }
     public static void searchByCity(){
         var city = getCity();

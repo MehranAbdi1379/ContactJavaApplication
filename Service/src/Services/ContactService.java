@@ -71,6 +71,23 @@ public class ContactService {
         }
         return result;
     }
+    public static List<Contact> searchByAgeByExactAge(int age){
+        var result = new ArrayList<Contact>();
+        for (var contact: ContactRepository.getAll()) {
+            if(contact.getAge() == age)
+                result.add(contact);
+        }
+        return result;
+    }
+    public static List<Contact> searchByAgeByMaximumAge(int maximumAge){
+
+    }
+    public static List<Contact> searchByAgeByMinimumAge(int minimumAge){
+
+    }
+    public static List<Contact> searchByAgeByCompleteRange(int minimumAge, int maximumAge){
+
+    }
     public static List<Contact> getFavorites(){
         var favoriteContacts = new ArrayList<Contact>();
         for (var contact: ContactRepository.getAll()) {

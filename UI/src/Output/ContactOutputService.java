@@ -26,10 +26,17 @@ public class ContactOutputService {
         System.out.println("You can Add(1), Search(2), List All(3), List Favorite(4) Contacts.");
     }
     public static void showSearchFunctionalities(){
-        System.out.println("You can search by First Name(1), Last Name(2), Phone Number(3) or City(4).");
+        System.out.println("You can search by First Name(1), Last Name(2), Phone Number(3), City(4) or Age(5).");
     }
-    public static void showEditAndRemoveFunctionalities(){
+    public static void showUpdateAndDeleteFunctionalities(){
         System.out.println("You can Edit(1) or Remove(2) your contacts.");
+    }
+    public static void showUpdateFunctionality(){
+        System.out.println("If you don't want to edit a field, just leave it empty and proceed.");
+    }
+    public static void showSearchByAgeFunctionality(){
+        System.out.println("You can search by age in 3 different ways. \n" +
+                "Search for exact age(1), equal or less than the age(2), equal or more than age(3), between minimum and maximum age(4).");
     }
     public static void showEditEmptyMessage(){
         System.out.println("If you don't want to change a property of the contact, leave it empty and press enter.");
@@ -62,7 +69,7 @@ public class ContactOutputService {
     public static void printContact(Contact contact){
         System.out.println("Id: " + contact.getId() + ", Name: "+contact.getFirstName()+ " " +
                 contact.getLastName()+", Phone Number: "+contact.getPhoneNumber()+"" +
-                ", City: " + contact.getCity() + ", Favorite: "+(contact.isFavorite()?"Yes":"No"));
+                ", City: " + contact.getCity() + ", Age: " + contact.getAge() + ", Favorite: "+(contact.isFavorite()?"Yes":"No"));
     }
     public static void listContacts(List<Contact> contacts){
         for (var contact: contacts) {
